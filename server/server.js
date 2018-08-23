@@ -1,3 +1,5 @@
+require('./config/config.js');
+
 const _ = require('lodash');
 const express  = require('express');
 // JSON to Object
@@ -9,7 +11,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
-const port = process.env.PORT || 3000;  // process.env.PORT heroku adja, ha nincs akkor 3000 (localhost)
+const port = process.env.PORT;  // process.env.PORT heroku adja, ha nincs akkor 3000 (localhost)
 
 // middleware, kérések előtt fut le -> kérésnek már az object megy
 app.use(bodyParser.json());
