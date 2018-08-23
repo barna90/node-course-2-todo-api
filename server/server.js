@@ -7,6 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
+const port = process.env.PORT || 3000;  // process.env.PORT heroku adja, ha nincs akkor 3000 (localhost)
 
 // middleware, kérések előtt fut le -> kérésnek már az object megy
 app.use(bodyParser.json());
@@ -33,8 +34,8 @@ app.get('/todos', (req, res) => {
   })
 });
 
-app.listen(3000, () =>{
-  console.log('Started on port 3000');
+app.listen(port, () =>{
+  console.log(`Started on port ${port}`);
 })
 
 module.export = {app};
