@@ -9,6 +9,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose'); // {}-ban: mongoose propertyt szedi ki és az lesz itt a neve
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;  // process.env.PORT heroku adja, ha nincs akkor 3000 (localhost)
@@ -116,6 +117,24 @@ app.post('/users', (req, res) => {
   }).catch((e) => {
     res.status(400).send(e);
   });
+});
+
+// require authentication = private route
+// find associate user, send it back
+// calling middleware
+app.get('/users/me', authenticate, (req, res) => {
+  // var token = req.header('x-auth'); // fetch x-auth
+  //
+  // User.findByToken(token).then((user) => {
+  //   if (!user) {
+  //     return Promise.reject();  //catch-be megy egyből nem fut tovább
+  //   }
+  //
+  //   res.send(user);
+  // }).catch((e) => {
+  //   res.status(401).send();
+  // }); // take the token value, find associate user
+  res.send(req.user);
 });
 
 app.listen(port, () =>{

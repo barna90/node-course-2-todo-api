@@ -70,13 +70,34 @@ UserSchema.methods.generateAuthToken = function() {
 
   user.tokens = user.tokens.concat({access, token});
 
-  console.log(user);
-
   return user.save().then(() => {
-    console.log('saved');
     return token;
   });
 };
+
+// model method (<--> instance method)
+// regular function because of this
+UserSchema.statics.findByToken = function(token) {
+  var User = this;  // this = model (nem instance mint instance methodnál)
+  var decoded;
+
+  // token decode
+  // mert jwt verify errort dob bármi van
+  try {
+    decoded = jwt.verify(token, 'abc123');
+  } catch (e) {
+    // return new Promise((resolve, reject) => {
+    //   reject();
+    // });  ===
+    return Promise.reject();
+  }
+
+  return User.findOne({
+    _id: decoded._id,
+    'tokens.token': token, //it tokens property
+    'tokens.access': 'auth'
+  });
+}
 
 var User = mongoose.model('User', UserSchema);
 
