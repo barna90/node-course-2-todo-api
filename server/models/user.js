@@ -78,7 +78,7 @@ UserSchema.methods.generateAuthToken = function() {
 
 // model method (<--> instance method)
 // regular function because of this
-UserSchema.statics.findByToken = function(token) {
+UserSchema.statics.findByToken = function (token) {
   var User = this;  // this = model (nem instance mint instance methodnál)
   var decoded;
 
@@ -97,6 +97,28 @@ UserSchema.statics.findByToken = function(token) {
     _id: decoded._id,
     'tokens.token': token, //it tokens property
     'tokens.access': 'auth'
+  });
+};
+
+UserSchema.statics.findByCredentials = function (email, password) {
+  var User = this;
+
+  // ez majd Promise-t ad vissza, azt is vár
+  return User.findOne({email}).then((user) => {
+    if (!user) {
+      return Promise.reject();
+    }
+
+    // Only support callback, not promises, ezért kell új promise-t csinálni
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          resolve(user);
+        } else {
+          reject();
+        }
+      });
+    });
   });
 };
 
