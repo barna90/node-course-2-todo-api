@@ -98,6 +98,26 @@ app.patch('/todos/:id', (req, res) => {
   });
 });
 
+// POST /users
+// sign up (/login majd) -> return token (generálni kell)
+app.post('/users', (req, res) => {
+  // console.log(req.body); // body a bodyPraserből jön
+  var body = _.pick(req.body, ['email', 'password']); // pull of properties we want from the object ~ mappeléshez és csak azt updateli ami meg van adva
+
+  var user = new User(body);
+
+  // User.findByToken()  // return user to the caller via token -> model methods -> dont require individual document, pl. findByToken: custom model method
+  // user.generateAuthToken -> instance methods, adding token to the individual user document, save it, send it back
+
+  user.save().then(() => {
+    return user.generateAuthToken()
+  }).then((token) => {
+    res.header('x-auth', token).send(user); //x- custom header
+  }).catch((e) => {
+    res.status(400).send(e);
+  });
+});
+
 app.listen(port, () =>{
   console.log(`Started on port ${port}`);
 })
