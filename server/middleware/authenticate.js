@@ -1,5 +1,6 @@
 var {User} = require('./../models/user');
 
+// x-auth alapján megkeresi a usert, majd hozzáaadja requesthez, aztán next és benne lesz már a requestben
 var authenticate = (req, res, next) => {
   var token = req.header('x-auth');
 
